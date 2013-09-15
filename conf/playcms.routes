@@ -1,0 +1,3 @@
+GET     /assets/*file                           controllers.playcms.Assets.at(path="/public", file)
+GET     /                                       controllers.playcms.CmsPagesController.index
+GET     /templates                              controllers.playcms.CmsTemplatesController.index
