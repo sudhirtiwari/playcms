@@ -5,27 +5,26 @@ import reactivemongo.api.DefaultDB
 import playcms.models.Site
 import reactivemongo.bson.{BSONObjectID, BSONDocument}
 
-trait ISiteRepository { this: MongoRepository[Site] =>
-  def findById(id: String)(implicit ec: ExecutionContext): Future[Option[Site]]
-  def findAll(implicit ec: ExecutionContext): Future[List[Site]]
-  def findByDomain(domain: String)(implicit ec: ExecutionContext): Future[Option[Site]]
-  def saveAndReload(site: Site)(implicit ec: ExecutionContext): Future[Site]
-  def delete(id: String)(implicit ec: ExecutionContext): Future[Unit]
-  def isUnique(id: Option[String], domain: String)(implicit ec: ExecutionContext): Future[Boolean]
-
+trait ISiteRepository { this: MongoSoftDeleteRepository[Site] =>
+  def findById(id: String): Future[Option[Site]]
+  def findAll: Future[List[Site]]
+  def findByDomain(domain: String): Future[Option[Site]]
+  def findChildren(id: Option[String]): Future[Seq[Site]]
+  def saveAndReload(site: Site): Future[Site]
+  def delete(id: String): Future[Unit]
+  def softDelete(id: String): Future[Unit]
 }
 
-class MongoSiteRepository(db: DefaultDB)
-  extends MongoRepository[Site](db)
+class MongoSiteRepository(db: DefaultDB)(override implicit val ec: ExecutionContext)
+  extends MongoSoftDeleteRepository[Site](db)
   with ISiteRepository {
 
   val collectionName = "cms_sites"
   implicit val bsonHandler = Site.SiteBSONHandler
 
-  def findByDomain(domain: String)(implicit ec: ExecutionContext) =
-    findOne(BSONDocument("domain" -> domain))
-
-  def isUnique(id: Option[String], domain: String)(implicit ec: ExecutionContext) = {
-    findByDomain(domain) map (_.isEmpty)
+  def findByDomain(domain: String) = findOne(BSONDocument("domain" -> domain))
+  def findChildren(id: Option[String]) = id match {
+    case Some(value) => find(BSONDocument("parentId" -> value))
+    case None        => find(BSONDocument("parentId" -> BSONDocument("$exists" -> false)))
   }
 }
