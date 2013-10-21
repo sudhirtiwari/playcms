@@ -1,0 +1,13 @@
+{
+    "name": "playcms",
+    "version": "0.0.1",
+    "dependencies": {
+        "jquery": "2.0.3",
+        "knockout.validation": "https://raw.github.com/Knockout-Contrib/Knockout-Validation/master/Dist/knockout.validation.js",
+        "bootstrap": "~3.0.0",
+        "underscore": "~1.5.2",
+        "durandal": "~2.0.0"
+    },
+    "devDependencies": {
+    }
+}

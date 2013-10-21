@@ -30,12 +30,11 @@ class SiteService(repository: ISiteRepository, cache: ISiteCache, eventBus: IEve
   }
 
   eventBus.subscribe(SiteUpdatedEvent) {
-    case SiteUpdatedEvent(site) =>
-      site.domain foreach (domain => cache.setIfExists(domain, site))
+    case SiteUpdatedEvent(site) => cache.setIfExists(site.id.get, site)
   }
 
   eventBus.subscribe(SiteDeletedEvent) {
-    case SiteDeletedEvent(domain) => cache removeByKey domain
+    case SiteDeletedEvent(id) => cache removeByKey id
   }
 
   def get(domain: String) = cache.getOrElse(domain)(repository.findByDomain(domain))

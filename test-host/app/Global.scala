@@ -1,6 +1,7 @@
 import play.api._
 import play.api.mvc._
 import play.api.mvc.Results._
+import scala.concurrent.Future
 
 object Global
   extends GlobalSettings {
@@ -15,6 +16,6 @@ object Global
 
   override def onError(request: RequestHeader, ex: Throwable) = {
     Logger error (ex.getMessage, ex)
-    InternalServerError
+    Future.successful(InternalServerError(ex.getMessage))
   }
 }

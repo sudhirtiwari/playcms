@@ -27,8 +27,8 @@ object SiteDeletedEvent extends CmsEventCompanion[SiteDeletedEvent] {
   val destination = "site:deleted"
   val reads = __.read[String].map(SiteDeletedEvent(_))
 }
-case class SiteDeletedEvent(domain: String) extends CmsEvent {
+case class SiteDeletedEvent(id: String) extends CmsEvent {
   type Body = String
   def companion = SiteDeletedEvent
-  def body = domain
+  def body = id
 }

@@ -18,6 +18,9 @@ project/boot/
 project/project
 dist
 
+client/node_modules
+client/components
+public
 
 # IntelliJ
 *.iws

@@ -8,7 +8,7 @@ import play.api.cache.Cache
 trait ITemplateCache extends ICache[Template]
 
 class TemplateCache(implicit val ec: ExecutionContext) extends ITemplateCache {
-  private def keyFrom(template: Template) = template.name
+  private def keyFrom(template: Template) = template.id.get
 
   def get(key: String) =
     Future(Cache.getAs[Template](s"template:$key"))

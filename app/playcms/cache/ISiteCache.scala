@@ -9,7 +9,7 @@ import scala.util.Success
 trait ISiteCache extends ICache[Site]
 
 class SiteCache(implicit val ec: ExecutionContext) extends ISiteCache {
-  private def keyFrom(site: Site) = s"site:${site.domain}"
+  private def keyFrom(site: Site) = s"site:${site.id.get}"
 
   def get(key: String) =
     Future(Cache.getAs[Site](s"site:$key"))
