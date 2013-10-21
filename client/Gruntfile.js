@@ -17,7 +17,7 @@ module.exports = function(grunt) {
                     {
                         expand: true,
                         src: ['app/views/**.html'],
-                        dest: '../public/javascripts/views/'
+                        dest: '../public/javascripts'
                     }
                 ]
             }
@@ -41,6 +41,9 @@ module.exports = function(grunt) {
             test: {
                 files: ['test/**.js'],
                 tasks: ['karma:unit:run']
+            },
+            distViews: {
+                files: ['../public/javascripts/app/views/**.html']
             }
         },
         recess: {
