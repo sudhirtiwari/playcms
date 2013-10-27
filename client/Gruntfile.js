@@ -11,6 +11,14 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+        karma: {
+            dev: {
+                configFile: 'karma-dev.conf.js'
+            },
+            ci: {
+                configFile: 'karma-ci.conf.js'
+            }
+        },
         copy: {
             views: {
                 files: [
@@ -44,6 +52,10 @@ module.exports = function(grunt) {
             },
             distViews: {
                 files: ['../public/javascripts/app/views/**.html']
+            },
+            karma: {
+                files: ['../public/javascripts/**', 'test/**'],
+                tasks: ['karma:dev:run']
             }
         },
         recess: {
@@ -89,7 +101,8 @@ module.exports = function(grunt) {
     grunt.registerTask('dev', [
         'recess:dist',
         'requirejs:dev',
-        'copy:views'
+        'copy:views',
+        'karma:ci:run'
     ]);
     grunt.registerTask('run', [
         'dev',
