@@ -13,10 +13,12 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         karma: {
             dev: {
-                configFile: 'karma-dev.conf.js'
+                configFile: 'karma-dev.conf.js',
+                singleRun: true
             },
             ci: {
-                configFile: 'karma-ci.conf.js'
+                configFile: 'karma-ci.conf.js',
+                singleRun: true
             }
         },
         copy: {
@@ -31,9 +33,6 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            options: {
-                livereload: true
-            },
             src: {
                 files: ['app/*.js', 'app/viewmodels/**.js', 'app/util/**.js'],
                 tasks: ['requirejs:dev']
@@ -44,18 +43,21 @@ module.exports = function(grunt) {
             },
             less: {
                 files: ['stylesheets/**.less', 'stylesheets/**.css'],
-                tasks: ['recess:dist']
+                tasks: ['recess:dist'],
+                options: {
+                    livereload: true
+                }
+            },
+            dist: {
+                files: ['../public/javascripts/**'],
+                tasks: ['karma:dev'],
+                options: {
+                    livereload: true
+                }
             },
             test: {
-                files: ['test/**.js'],
-                tasks: ['karma:unit:run']
-            },
-            distViews: {
-                files: ['../public/javascripts/app/views/**.html']
-            },
-            karma: {
-                files: ['../public/javascripts/**', 'test/**'],
-                tasks: ['karma:dev:run']
+                files: ['test/**'],
+                tasks: ['karma:dev']
             }
         },
         recess: {
@@ -101,8 +103,7 @@ module.exports = function(grunt) {
     grunt.registerTask('dev', [
         'recess:dist',
         'requirejs:dev',
-        'copy:views',
-        'karma:ci:run'
+        'copy:views'
     ]);
     grunt.registerTask('run', [
         'dev',

@@ -20,8 +20,6 @@ module.exports = function(config) {
         junitReporter: {
             outputFile: 'test_reports/test-results.xml',
             suite: ''
-        },
-
-        singleRun: true
+        }
     });
 };
