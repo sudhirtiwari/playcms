@@ -9,7 +9,10 @@ requirejs.config({
         "knockout.validation": 'knockout.validation/index',
         durandal: 'durandal',
         plugins: 'durandal/plugins',
-        transitions: 'durandal/transitions'
+        transitions: 'durandal/transitions',
+        knockback: 'knockback/knockback',
+        backbone: 'backbone/backbone',
+        "backbone-relational": 'backbone-relational/backbone-relational'
     },
     shim: {
         underscore: {
@@ -27,11 +30,19 @@ requirejs.config({
         "knockout.validation": {
             deps: ['knockout'],
             exports: 'knockout.validation'
+        },
+        backbone: {
+            deps: ['jquery'],
+            exports: 'Backbone'
+        },
+        "backbone-relational": {
+            deps: ['backbone']
         }
     }
 });
 
-define(['durandal/system', 'durandal/app', 'durandal/viewLocator', 'bootstrap'], function(system, app, viewLocator, bootstrap) {
+define(['durandal/system', 'durandal/app', 'durandal/viewLocator', 'bootstrap', 'knockback'],
+function(system, app, viewLocator) {
     system.debug(true);
 
     app.title = 'Play! CMS';

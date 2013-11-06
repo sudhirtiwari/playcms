@@ -6,7 +6,10 @@
         "knockout.validation": "https://raw.github.com/Knockout-Contrib/Knockout-Validation/master/Dist/knockout.validation.js",
         "bootstrap": "~3.0.0",
         "underscore": "~1.5.2",
-        "durandal": "~2.0.0"
+        "durandal": "~2.0.0",
+        "knockback": "~0.17.2",
+        "backbone": "~1.1.0",
+        "backbone-relational": "~0.8.6"
     },
     "devDependencies": {
 

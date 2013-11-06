@@ -5,7 +5,7 @@ import reactivemongo.api.collections.default.BSONCollection
 import reactivemongo.api.DefaultDB
 import reactivemongo.bson._
 import reactivemongo.core.commands.{GetLastError, Count}
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.ExecutionContext
 
 abstract class MongoRepository[T <: Model](db: DefaultDB)(implicit val ec: ExecutionContext) {
   type BSONHandlerType = BSONDocumentReader[T] with BSONDocumentWriter[T] with BSONHandler[BSONDocument, T]
@@ -39,5 +39,5 @@ trait NaturalKeyMongoRepository[T <: Model] { this: MongoRepository[T] =>
   def findByNaturalKey(entity: T) =
     findOne(naturalKeySelector(entity))
   def upsertByNaturalKey(entity: T) =
-    update(naturalKeySelector(entity), entity, GetLastError(), true, false)
+    update(naturalKeySelector(entity), entity, GetLastError(), upsert = true, multi = false)
 }

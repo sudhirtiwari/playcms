@@ -1,6 +1,9 @@
+import java.net.InetSocketAddress
+import play.PlayRunHook
 import sbt._
 import Keys._
 import play.Project._
+import scala.Some
 
 object ApplicationBuild extends Build {
   import Dependencies._
@@ -30,7 +33,13 @@ object ApplicationBuild extends Build {
     ),
     parallelExecution in Test := false,
     parallelExecution in UnitTest := false,
-    sbt.Keys.fork in Test := false
+    sbt.Keys.fork in Test := false,
+    // Turn off play's internal less compiler
+    play.Project.lessEntryPoints := Nil,
+    // Turn off play's internal javascript compiler
+    play.Project.javascriptEntryPoints := Nil,
+    // tell play we're using this directory for throwing Grunt-built assets in, so it will allow fetching updated ones from the File System
+    play.Project.playAssetsDirectories <+= (baseDirectory in Compile)(base => base / "public")
   )
 
   lazy val testModule = play.Project(

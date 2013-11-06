@@ -44,9 +44,9 @@ object Page {
         bson.getAs[String]("templateId").get,
         bson.getAs[String]("relativePath").get,
         bson.getAs[String]("fullPath"),
-        bson.getAs[BSONDocument]("contentAreas").getOrElse(BSONDocument.empty).elements map ({
+        bson.getAs[BSONDocument]("contentAreas").getOrElse(BSONDocument.empty).elements map {
           case (name, content: BSONString) => name -> content.value
-        }) toMap,
+        } toMap,
         bson.getAs[Boolean]("isDeleted").get)
   }
 

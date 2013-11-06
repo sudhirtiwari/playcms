@@ -1,3 +1,26 @@
-GET     /assets/*file                           controllers.playcms.Assets.at(path="/public", file)
-GET     /                                       controllers.playcms.CmsPagesController.index
-GET     /templates                              controllers.playcms.CmsTemplatesController.index
+GET         /cms/assets/*file                           controllers.playcms.Assets.at(path="/public", file)
+GET         /cms                                        controllers.playcms.DashboardController.index
+
+#Sites
+GET         /cms/sites                                  controllers.playcms.SitesController.children(parentId: Option[String])
+POST        /cms/sites                                  controllers.playcms.SitesController.create
+GET         /cms/sites/:id                              controllers.playcms.SitesController.get(id: String)
+DELETE      /cms/sites/:id                              controllers.playcms.SitesController.delete(id: String)
+PUT         /cms/sites/:id                              controllers.playcms.SitesController.update(id: String)
+GET         /cms/sites/uniqueCheck                      controllers.playcms.SitesController.uniqueCheck(id: Option[String], domain: String)
+
+#Pages
+GET         /cms/pages                                  controllers.playcms.PagesController.children(siteId: String, parentId: Option[String])
+POST        /cms/pages                                  controllers.playcms.PagesController.create
+GET         /cms/pages/:id                              controllers.playcms.PagesController.get(id: String)
+DELETE      /cms/pages/:id                              controllers.playcms.PagesController.delete(id: String)
+PUT         /cms/pages/:id                              controllers.playcms.PagesController.update(id: String)
+GET         /cms/pages/uniqueCheck                      controllers.playcms.PagesController.uniqueCheck(id: Option[String], parentId: Option[String], relativePath: String)
+
+#Templates
+GET         /cms/templates                              controllers.playcms.TemplatesController.list
+POST        /cms/templates                              controllers.playcms.TemplatesController.create
+GET         /cms/templates/:id                          controllers.playcms.TemplatesController.get(id: String)
+DELETE      /cms/templates/:id                          controllers.playcms.TemplatesController.delete(id: String)
+PUT         /cms/templates/:id                          controllers.playcms.TemplatesController.update(id: String)
+GET         /cms/templates/uniqueCheck                  controllers.playcms.TemplatesController.uniqueCheck(id: Option[String], name: String)

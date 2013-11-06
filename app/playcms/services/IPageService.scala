@@ -10,6 +10,7 @@ import scala.concurrent.{Future, ExecutionContext}
 trait IPageService {
   def getById(id: String): Future[Option[Page]]
   def getBySite(siteId: String): Future[Seq[Page]]
+  def getByParentId(parentId: Option[String]): Future[Seq[Page]]
   def getAll: Future[Seq[Page]]
   def delete(id: String): Future[Unit]
   def softDelete(id: String): Future[Unit]
@@ -35,6 +36,7 @@ class PageService(repository: IPageRepository, cache: IPageCache, eventBus: IEve
 
   def getById(id: String) = cache.getOrElse(id)(repository.findById(id))
   def getBySite(siteId: String) = repository.findBySite(siteId)
+  def getByParentId(parentId: Option[String]) = repository.findChildren(parentId)
   def getAll = repository.findAll
   def delete(id: String) =
     for {
@@ -84,8 +86,8 @@ class PageService(repository: IPageRepository, cache: IPageCache, eventBus: IEve
 
   def isUnique(id: Option[String], parentId: Option[String], relativePath: String) =
     repository.findChildren(parentId) map { peers =>
-      peers.filter { page =>
-        page.relativePath.toLowerCase() == relativePath.toLowerCase() && page.id.get != id.get
-      } isEmpty
+      peers.filter({ page =>
+        page.relativePath.toLowerCase == relativePath.toLowerCase && page.id.get != id.get
+      }).isEmpty
     }
 }

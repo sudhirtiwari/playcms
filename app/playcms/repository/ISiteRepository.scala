@@ -1,9 +1,9 @@
 package playcms.repository
 
 import concurrent.{Future, ExecutionContext}
-import reactivemongo.api.DefaultDB
 import playcms.models.Site
-import reactivemongo.bson.{BSONObjectID, BSONDocument}
+import reactivemongo.api.DefaultDB
+import reactivemongo.bson.BSONDocument
 
 trait ISiteRepository { this: MongoSoftDeleteRepository[Site] =>
   def findById(id: String): Future[Option[Site]]

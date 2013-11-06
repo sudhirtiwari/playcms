@@ -15,7 +15,7 @@ trait IPageRepository { this: MongoSoftDeleteRepository[Page] =>
   def softDelete(id: String): Future[Unit]
 }
 
-class PageRepository(db: DefaultDB)(implicit ec: ExecutionContext)
+class MongoPageRepository(db: DefaultDB)(implicit ec: ExecutionContext)
   extends MongoSoftDeleteRepository[Page](db) with IPageRepository {
 
   val collectionName = "cms_pages"

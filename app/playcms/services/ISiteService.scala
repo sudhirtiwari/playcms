@@ -5,12 +5,12 @@ import playcms.models.Site
 import playcms.repository.ISiteRepository
 import playcms.services.events.{SiteDeletedEvent, SiteUpdatedEvent, SiteAddedEvent, IEventBus}
 import playcms.util.Logging
-import play.api.libs.json._
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ISiteService {
   def get(domain: String): Future[Option[Site]]
   def getById(id: String): Future[Option[Site]]
+  def getByParentId(parentId: Option[String]): Future[Seq[Site]]
   def getAll: Future[Seq[Site]]
   def delete(id: String): Future[Unit]
   def softDelete(id: String): Future[Unit]
@@ -39,6 +39,7 @@ class SiteService(repository: ISiteRepository, cache: ISiteCache, eventBus: IEve
 
   def get(domain: String) = cache.getOrElse(domain)(repository.findByDomain(domain))
   def getById(id: String) = repository findById id
+  def getByParentId(parentId: Option[String]): Future[Seq[Site]] = repository findChildren parentId
   def getAll = repository.findAll
   def delete(id: String): Future[Unit] =
     for {
@@ -67,7 +68,7 @@ class SiteService(repository: ISiteRepository, cache: ISiteCache, eventBus: IEve
   def save(site: Site) =
     for {
       parents <- walkParents(site)
-      domain = parents map (_.name) mkString(".")
+      domain = parents.map(_.name).mkString(".")
       reloaded <- repository.saveAndReload(site.copy(domain = Some(domain)))
     } yield {
       site.id match {
@@ -90,10 +91,9 @@ class SiteService(repository: ISiteRepository, cache: ISiteCache, eventBus: IEve
     step(site)()
   }
 
-  def isUnique(id: Option[String], domain: String) = {
+  def isUnique(id: Option[String], domain: String) =
     repository.findByDomain(domain) map {
       case Some(site) => id.isDefined && id.get == site.id.get
       case None       => true
     }
-  }
 }

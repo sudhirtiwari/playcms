@@ -1,9 +1,8 @@
 package playcms.services
 
 import com.github.jknack.handlebars.TemplateLoader
-import concurrent.{Await}
+import concurrent.Await
 import concurrent.duration._
-import concurrent.ExecutionContext.Implicits.global
 import java.io.{StringReader, FileNotFoundException}
 
 class PlayCMSTemplateLoader(templateService: ITemplateService, readTimeout: Duration)

@@ -4,7 +4,6 @@ import playcms.models.Site
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Future, ExecutionContext}
 import play.api.cache.Cache
-import scala.util.Success
 
 trait ISiteCache extends ICache[Site]
 
