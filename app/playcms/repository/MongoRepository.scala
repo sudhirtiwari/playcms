@@ -1,25 +1,31 @@
 package playcms.repository
 
+import play.api.libs.json._
+import play.modules.reactivemongo.json.collection.JSONCollection
+import play.modules.reactivemongo.json.BSONFormats.toBSON
 import playcms.models.Model
-import reactivemongo.api.collections.default.BSONCollection
 import reactivemongo.api.DefaultDB
 import reactivemongo.bson._
 import reactivemongo.core.commands.{GetLastError, Count}
 import scala.concurrent.ExecutionContext
 
-abstract class MongoRepository[T <: Model](db: DefaultDB)(implicit val ec: ExecutionContext) {
-  type BSONHandlerType = BSONDocumentReader[T] with BSONDocumentWriter[T] with BSONHandler[BSONDocument, T]
-  implicit val bsonHandler: BSONHandlerType
+abstract class MongoRepository[T <: Model](db: DefaultDB)(implicit val ec: ExecutionContext, format: Format[T]) {
   val collectionName: String
-  val collection: BSONCollection = db.collection[BSONCollection](collectionName)
+  val collection = db.collection[JSONCollection](collectionName)
 
-  def findById(id: String) = findOne(BSONDocument("_id" -> new BSONObjectID(id)))
+  def findById(id: String) = findOne(Json.obj("_id" -> id))
   def findAll = collection.find(BSONDocument()).cursor[T].collect[List]()
-  def find(query: BSONDocument) = collection.find(query).cursor[T].collect[List]()
-  def findOne(query: BSONDocument) = collection.find(query).cursor[T].headOption
-  def count(query: BSONDocument) = db.command(Count(collectionName, Option(query)))
-  def countAll = count(null)
-  def save(entity: T) = collection.save(entity)
+  def find(query: JsObject) = collection.find(query).cursor[T].collect[List]()
+  def findOne(query: JsObject) = collection.find(query).one[T]
+  def count(query: JsObject) = {
+    toBSON(query) match {
+      case JsSuccess(q, _) => db.command(Count(collectionName, Option(q.asInstanceOf[BSONDocument])))
+      case JsError(errors) => throw new RuntimeException(errors.toString())
+    }
+  }
+
+  def countAll = count(Json.obj())
+  def save(entity: T) = collection.save[T](entity)
   def saveAndReload(entity: T) = {
     val entityToSave = entity.withId.asInstanceOf[T]
     for {
@@ -29,13 +35,13 @@ abstract class MongoRepository[T <: Model](db: DefaultDB)(implicit val ec: Execu
     } yield reloaded
   }
   def update[S, U](selector: S, update: U, writeConcern: GetLastError = GetLastError(), upsert: Boolean = false, multi: Boolean = false)
-                  (implicit selectionWriter: BSONDocumentWriter[S], updateWriter: BSONDocumentWriter[U]) =
+                  (implicit selectionWriter: Writes[S], updateWriter: Writes[U]) =
     collection.update(selector, update, writeConcern, upsert, multi)
-  def delete(id: String) = collection.remove(BSONDocument("_id" -> new BSONObjectID(id))) map (_ => {})
+  def delete(id: String) = collection.remove(Json.obj("_id" -> id)) map (_ => {})
 }
 
 trait NaturalKeyMongoRepository[T <: Model] { this: MongoRepository[T] =>
-  def naturalKeySelector(entity: T): BSONDocument
+  def naturalKeySelector(entity: T): JsObject
   def findByNaturalKey(entity: T) =
     findOne(naturalKeySelector(entity))
   def upsertByNaturalKey(entity: T) =

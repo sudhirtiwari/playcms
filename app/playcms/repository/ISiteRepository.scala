@@ -1,9 +1,9 @@
 package playcms.repository
 
-import concurrent.{Future, ExecutionContext}
+import play.api.libs.json.{Json, Format}
 import playcms.models.Site
 import reactivemongo.api.DefaultDB
-import reactivemongo.bson.BSONDocument
+import scala.concurrent.{Future, ExecutionContext}
 
 trait ISiteRepository { this: MongoSoftDeleteRepository[Site] =>
   def findById(id: String): Future[Option[Site]]
@@ -15,16 +15,15 @@ trait ISiteRepository { this: MongoSoftDeleteRepository[Site] =>
   def softDelete(id: String): Future[Unit]
 }
 
-class MongoSiteRepository(db: DefaultDB)(override implicit val ec: ExecutionContext)
+class MongoSiteRepository(db: DefaultDB)(override implicit val ec: ExecutionContext, format: Format[Site])
   extends MongoSoftDeleteRepository[Site](db)
   with ISiteRepository {
 
   val collectionName = "cms_sites"
-  implicit val bsonHandler = Site.SiteBSONHandler
 
-  def findByDomain(domain: String) = findOne(BSONDocument("domain" -> domain))
+  def findByDomain(domain: String) = findOne(Json.obj("domain" -> domain))
   def findChildren(id: Option[String]) = id match {
-    case Some(value) => find(BSONDocument("parentId" -> value))
-    case None        => find(BSONDocument("parentId" -> BSONDocument("$exists" -> false)))
+    case Some(value) => find(Json.obj("parentId" -> value))
+    case None        => find(Json.obj("parentId" -> Json.obj("$exists" -> false)))
   }
 }

@@ -1,4 +1,4 @@
-define(['require', 'Backbone'],
+define(['require', 'backbone', 'viewmodels/sites/site'],
 function(require, Backbone) {
     var SiteCollection = null;
 

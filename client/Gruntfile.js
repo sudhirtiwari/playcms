@@ -50,15 +50,15 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: ['../public/javascripts/**'],
-                tasks: ['karma:dev'],
+                //tasks: ['karma:dev'],
                 options: {
                     livereload: true
                 }
-            },
-            test: {
-                files: ['test/**'],
-                tasks: ['karma:dev']
-            }
+            }//,
+//            test: {
+//                files: ['test/**'],
+//                tasks: ['karma:dev']
+//            }
         },
         recess: {
             dist: {

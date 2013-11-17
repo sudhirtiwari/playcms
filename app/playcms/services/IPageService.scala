@@ -10,13 +10,13 @@ import scala.concurrent.{Future, ExecutionContext}
 trait IPageService {
   def getById(id: String): Future[Option[Page]]
   def getBySite(siteId: String): Future[Seq[Page]]
-  def getByParentId(parentId: Option[String]): Future[Seq[Page]]
+  def getByParentId(siteId: String, parentId: Option[String]): Future[Seq[Page]]
   def getAll: Future[Seq[Page]]
   def delete(id: String): Future[Unit]
   def softDelete(id: String): Future[Unit]
   def save(page: Page): Future[Page]
   def walkParents(page: Page): Future[Seq[Page]]
-  def isUnique(id: Option[String], parentId: Option[String], relativePath: String): Future[Boolean]
+  def isUnique(id: Option[String], siteId: String, parentId: Option[String], relativePath: String): Future[Boolean]
 }
 
 class PageService(repository: IPageRepository, cache: IPageCache, eventBus: IEventBus)
@@ -36,11 +36,12 @@ class PageService(repository: IPageRepository, cache: IPageCache, eventBus: IEve
 
   def getById(id: String) = cache.getOrElse(id)(repository.findById(id))
   def getBySite(siteId: String) = repository.findBySite(siteId)
-  def getByParentId(parentId: Option[String]) = repository.findChildren(parentId)
+  def getByParentId(siteId: String, parentId: Option[String]) = repository.findChildren(siteId, parentId)
   def getAll = repository.findAll
   def delete(id: String) =
     for {
-      children <- repository.findChildren(Some(id))
+      page <- repository.findById(id)
+      children <- page map (p => repository.findChildren(p.siteId, p.id)) getOrElse Future.successful(Nil)
       _ <- Future.traverse(children)(child => delete(child.id.get)) map (_ => {})
       parentDeleted <- repository.delete(id)
     } yield {
@@ -50,8 +51,8 @@ class PageService(repository: IPageRepository, cache: IPageCache, eventBus: IEve
 
   def softDelete(id: String) =
     for {
-      children <- repository.findChildren(Some(id))
-      _ <- Future.traverse(children)(child => softDelete(child.id.get)) map (_ => {})
+      page <- repository.findById(id)
+      children <- page map (p => repository.findChildren(p.siteId, p.id)) getOrElse Future.successful(Nil)
       parentDeleted <- repository.softDelete(id)
     } yield {
       eventBus.publish(PageDeletedEvent(id))
@@ -84,8 +85,8 @@ class PageService(repository: IPageRepository, cache: IPageCache, eventBus: IEve
     step(page)()
   }
 
-  def isUnique(id: Option[String], parentId: Option[String], relativePath: String) =
-    repository.findChildren(parentId) map { peers =>
+  def isUnique(id: Option[String], siteId: String, parentId: Option[String], relativePath: String) =
+    repository.findChildren(siteId, parentId) map { peers =>
       peers.filter({ page =>
         page.relativePath.toLowerCase == relativePath.toLowerCase && page.id.get != id.get
       }).isEmpty

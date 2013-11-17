@@ -15,7 +15,7 @@ POST        /cms/pages                                  controllers.playcms.Page
 GET         /cms/pages/:id                              controllers.playcms.PagesController.get(id: String)
 DELETE      /cms/pages/:id                              controllers.playcms.PagesController.delete(id: String)
 PUT         /cms/pages/:id                              controllers.playcms.PagesController.update(id: String)
-GET         /cms/pages/uniqueCheck                      controllers.playcms.PagesController.uniqueCheck(id: Option[String], parentId: Option[String], relativePath: String)
+GET         /cms/pages/uniqueCheck                      controllers.playcms.PagesController.uniqueCheck(id: Option[String], siteId: String, parentId: Option[String], relativePath: String)
 
 #Templates
 GET         /cms/templates                              controllers.playcms.TemplatesController.list

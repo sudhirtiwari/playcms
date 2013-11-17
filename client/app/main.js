@@ -10,9 +10,9 @@ requirejs.config({
         durandal: 'durandal',
         plugins: 'durandal/plugins',
         transitions: 'durandal/transitions',
-        knockback: 'knockback/knockback',
-        backbone: 'backbone/backbone',
-        "backbone-relational": 'backbone-relational/backbone-relational'
+        knockback: 'knockback',
+        backbone: 'backbone',
+        "backbone-relational": 'backbone-relational'
     },
     shim: {
         underscore: {

@@ -6,9 +6,13 @@ import playcms.services._
 import playcms.services.events.StompEventBus
 
 package object playcms {
-  val config = current.configuration
+  implicit val pageFormat = models.Page.pageFormat
+  implicit val siteFormat = models.Site.siteFormat
+  implicit val templateFormat = models.Template.templateFormat
   implicit val executionContext = play.api.libs.concurrent.Execution.defaultContext
   implicit val actorRefFactory = play.api.libs.concurrent.Akka.system
+
+  val config = current.configuration
 
   val PageRepository = new MongoPageRepository(db)
   val SiteRepository = new MongoSiteRepository(db)
