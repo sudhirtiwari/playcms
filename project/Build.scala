@@ -1,78 +1,52 @@
-import java.net.InetSocketAddress
-import play.PlayRunHook
 import sbt._
 import Keys._
-import play.Project._
-import scala.Some
+import BuildSettings._
 
 object ApplicationBuild extends Build {
-  import Dependencies._
-
   val appName         = "playcms"
   val appVersion      = "0.1.0-SNAPSHOT"
 
-  val appDependencies = compileDeps ++ testDeps
+  lazy val util = sbt.Project(
+    id = appName + "-util",
+    base = file("util"),
+    settings = Defaults.defaultSettings ++ commonSettings
+  )
 
-  lazy val UnitTest = config("unit") extend Test
+  lazy val common = play.Project(
+    name = appName + "-common",
+    applicationVersion = appVersion,
+    dependencies = appDependencies,
+    path = file("common"),
+    settings = commonSettings
+  ).dependsOn(util)
+
+  lazy val admin = play.Project(
+    name = appName + "-admin",
+    applicationVersion = appVersion,
+    dependencies = appDependencies,
+    path = file("admin"),
+    settings = commonSettings ++ Seq(
+      // Turn off play's internal less compiler
+      play.Project.lessEntryPoints := Nil,
+      // Turn off play's internal javascript compiler
+      play.Project.javascriptEntryPoints := Nil,
+      // tell play we're using this directory for throwing Grunt-built assets in, so it will allow fetching updated ones from the File System
+      play.Project.playAssetsDirectories <+= (baseDirectory in Compile)(base => base / "public")
+    )
+  ).dependsOn(util, common)
+
+  lazy val renderer = play.Project(
+    name = appName + "-renderer",
+    applicationVersion = appVersion,
+    dependencies = appDependencies,
+    path = file("renderer"),
+    settings = commonSettings
+  ).dependsOn(util, common)
 
   lazy val main = play.Project(
-    appName,
-    appVersion,
-    appDependencies
-  )
-  .configs(UnitTest)
-  .settings(
-    organization := "com.github.nrf110",
-    resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/",
-    testOptions in Test := Seq(
-      Tests.Setup { () => System.setProperty("config.file", "conf/test.conf") }
-    ),
-    testOptions in UnitTest := Seq(
-      Tests.Setup { () => System.setProperty("config.file", "conf/test.conf") },
-      Tests.Filter { _.contains(".unit.") }
-    ),
-    parallelExecution in Test := false,
-    parallelExecution in UnitTest := false,
-    sbt.Keys.fork in Test := false,
-    // Turn off play's internal less compiler
-    play.Project.lessEntryPoints := Nil,
-    // Turn off play's internal javascript compiler
-    play.Project.javascriptEntryPoints := Nil,
-    // tell play we're using this directory for throwing Grunt-built assets in, so it will allow fetching updated ones from the File System
-    play.Project.playAssetsDirectories <+= (baseDirectory in Compile)(base => base / "public")
-  )
-
-  lazy val testModule = play.Project(
     appName + "-test",
     appVersion,
-    path = file("./test-host")
-  )
-  .settings(
-    resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
-  ).dependsOn(main)
-}
-
-object Dependencies {
-  object Group {
-    val akka = "com.typesafe.akka"
-  }
-
-  object V {
-    val reactive  = "0.10.0-SNAPSHOT"
-    val scalatest = "2.0.M5b"
-    val handlebars = "0.9.0"
-    val akka = "2.2.1"
-    val play = "2.2.0"
-  }
-
-  val compileDeps = Seq(
-    "org.reactivemongo"       %% "play2-reactivemongo"           % V.reactive,
-    "com.github.jknack"       %  "handlebars"                    % V.handlebars,
-    Group.akka                %% "akka-actor"                    % V.akka,
-    Group.akka                %% "akka-camel"                    % V.akka,
-    "com.typesafe.play"       %% "play-cache"                    % V.play
-  )
-  val testDeps = Seq(
-    "org.scalatest"           %% "scalatest"         % V.scalatest
-  )
+    path = file("./test-host"),
+    settings = commonSettings
+  ).dependsOn(util, admin, renderer).aggregate(util, admin, renderer)
 }
