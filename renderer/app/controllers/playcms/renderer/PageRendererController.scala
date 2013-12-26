@@ -11,12 +11,12 @@ class PageRendererController(pageService: IPageService, templateService: ITempla
                             (implicit executionContext: ExecutionContext) extends Controller {
 
   def render(route: RouteEntry) = Action.async { implicit request =>
+    def redirect(status: Int) = Future.successful(Redirect(url(route.fqdn, route.path), status))
+
     route.status match {
-      case SEE_OTHER          =>  Future.successful(SeeOther(url(route.fqdn, route.path)))
-      case MOVED_PERMANENTLY  =>  Future.successful(MovedPermanently(url(route.fqdn, route.path)))
-      case TEMPORARY_REDIRECT =>  Future.successful(TemporaryRedirect(url(route.fqdn, route.path)))
-      case GONE               =>  Future.successful(Gone)
-      case OK                 =>  Future.successful(Ok)
+      case status @ SEE_OTHER | MOVED_PERMANENTLY | TEMPORARY_REDIRECT => redirect(status)
+      case GONE =>  Future.successful(Gone)
+      case OK =>  Future.successful(Ok)
     }
   }
 
@@ -30,4 +30,4 @@ class PageRendererController(pageService: IPageService, templateService: ITempla
 //    }
 }
 
-object PageRendererController extends PageRendererController()
+object PageRendererController extends PageRendererController(PageService, TemplateService)

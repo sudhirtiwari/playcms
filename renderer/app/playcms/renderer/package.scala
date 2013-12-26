@@ -31,7 +31,7 @@ package object renderer {
   val PageService = new PageService(PageCache, PageRepository, EventBus)
   val RouteEntryService = new RouteEntryService(RouteEntryCache, RouteEntryRepository, EventBus)
   val SiteService = new SiteService(SiteCache, EventBus)
-  val TemplateService = new TemplateService(TemplateCache, EventBus)
+  val TemplateService = new TemplateService(TemplateCache, TemplateRepository, EventBus)
 
   val CmsRouter = new CmsRouter(RouteEntryService, PageService)
 }

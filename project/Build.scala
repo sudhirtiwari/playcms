@@ -12,6 +12,14 @@ object ApplicationBuild extends Build {
     settings = Defaults.defaultSettings ++ commonSettings
   )
 
+  lazy val dust = sbt.Project(
+    id = "dust",
+    base = file("dust"),
+    settings = Defaults.defaultSettings ++ commonSettings ++ Seq(
+      libraryDependencies += "com.typesafe.play" %% "play" % "2.2.0"
+    )
+  )
+
   lazy val common = play.Project(
     name = appName + "-common",
     applicationVersion = appVersion,
