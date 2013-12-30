@@ -1,6 +1,7 @@
 package com.github.nrf110
 
-import com.github.nrf110.parse._
+import model.Context
+import parse.{Node, NoOp, Nullifyable, Visitable, Special, Buffer, Body}
 import scala.annotation.tailrec
 
 object FilterNode {
@@ -59,7 +60,7 @@ class CompactBuffersOptimizer[A <: Body] extends NodeOptimizer[A] {
     @tailrec
     def step(nodes: List[Node], memo: Option[Buffer], accum: List[NodeBranch]): List[NodeBranch] =
       nodes match {
-        case x :: xs => FilterNode(ctx, x) match {
+        case x :: xs => FilterNode(x) match {
           case Some(NodeBranch(buffer: Buffer, _)) => compact(buffer, xs, memo, accum)
           case Some(branch) => step(xs, None, accum ::: memo.map(NodeBranch(_)).toList ::: List(branch) )
           case None => step(xs, None, accum)

@@ -14,7 +14,7 @@ class PageRendererController(pageService: IPageService, templateService: ITempla
     def redirect(status: Int) = Future.successful(Redirect(url(route.fqdn, route.path), status))
 
     route.status match {
-      case status @ SEE_OTHER | MOVED_PERMANENTLY | TEMPORARY_REDIRECT => redirect(status)
+      case SEE_OTHER | MOVED_PERMANENTLY | TEMPORARY_REDIRECT => redirect(route.status)
       case GONE =>  Future.successful(Gone)
       case OK =>  Future.successful(Ok)
     }

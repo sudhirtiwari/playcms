@@ -137,4 +137,6 @@ package object parse {
     val Emtpy = Params(Nil)
   }
   case class Filters(values: List[String]) extends NoOp
+
+  case class ParserFailure(msg: String, line: Int, column: Int) extends RuntimeException(msg)
 }

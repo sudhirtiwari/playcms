@@ -9,11 +9,11 @@ object DustCompiler {
     val parser = new DustParser
     parser.parseAll(parser.body, src) match {
       case parser.Success(ast: Body, _) => compile(ast, name)
-      case parser.Failure(msg, next) => next.pos
+      case parser.Failure(msg, next) => throw new ParserFailure(msg, next.pos.line, next.pos.column)
     }
   }
 
-  def compile(body: Body, name: String): Future[DustTemplate]
+  def compile(body: Body, name: String): Future[DustTemplate] = ???
 }
 
 case class NodeBranch(head: Node, children: List[NodeBranch] = Nil)

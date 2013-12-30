@@ -1,5 +1,6 @@
 package com.github.nrf110
 
+import util._
 import java.io.File
 import play.api.libs.iteratee.{Iteratee, Enumerator}
 import scala.concurrent.{ExecutionContext, Future}

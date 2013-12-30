@@ -22,14 +22,19 @@ package object util {
           GT -> "&gt;",
           QUOT -> "&quot;")
       else s
+
+    //TODO: implement this
+    def escapeJs: String = ???
+    //TODO: implement this
+    def encodeUriComponent = ???
   }
 
   implicit class PimpedTry[A](t: Try[A]) {
     def fold[B](onSuccess: A => B, onFailure: Throwable => B): B =
       t match {
-        case Success(a: A) => onSuccess(a)
-        case Failure(NonFatal(t)) => onFailure(t)
-        case Failure(t) => throw t
+        case Success(a) => onSuccess(a)
+        case Failure(NonFatal(t: Throwable)) => onFailure(t)
+        case Failure(t: Throwable) => throw t
       }
   }
 }

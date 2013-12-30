@@ -53,8 +53,8 @@ class RouteEntryService(routeEntryRepository: IRouteEntryRepository, siteService
   def findRoute(fqdn: String, path: String): Future[Option[RouteEntry]] =
     routeEntryRepository.findByAddress(fqdn, path)
 
-  def moveTemporarily(page: Page, path: String, fqdn: Option[String]): Future[Boolean] =
-    (for {
+  def moveTemporarily(page: Page, path: String, fqdn: Option[String]): Future[Boolean] = {
+    val result = for {
       routes <- routeEntryRepository.findByPageId(page.id.get)
       updated = routes map {
         case entry @ RouteEntry(_, _, _, _, OK, _) =>
@@ -64,12 +64,13 @@ class RouteEntryService(routeEntryRepository: IRouteEntryRepository, siteService
         case entry @ RouteEntry(_, _, _, _, TEMPORARY_REDIRECT, _) =>
         case entry => entry
       }
-    } yield updated) fold (
+    } yield updated
+
+    result fold (
       onSuccess = { _ => true },
-      onFailure = { t =>
-        false
-      }
+      onFailure = { t => false }
     )
+  }
 
   //def movePermanently(page: Page): Future[Boolean] = ???
 

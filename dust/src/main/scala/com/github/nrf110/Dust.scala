@@ -1,12 +1,11 @@
 package com.github.nrf110
 
 import model.DustTemplate
-import play.api.libs.iteratee.Enumerator
 import scala.concurrent.{ExecutionContext, Future}
 
 class Dust(implicit ec: ExecutionContext) {
   private var templateSources: Seq[ITemplateSource] = Seq.empty[ITemplateSource]
-  def registerTemplateSources(sources: ITemplateSource*): Unit = {
+  def registerTemplateSources(sources: ITemplateSource*) {
     templateSources = sources ++ templateSources
   }
 
