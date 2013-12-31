@@ -1,4 +1,4 @@
-package com.github.nrf110
+package com.github.nrf110.dust
 
 import model.Context
 import parse.{Node, NoOp, Nullifyable, Visitable, Special, Buffer, Body}

@@ -1,4 +1,4 @@
-package com.github.nrf110
+package com.github.nrf110.dust
 
 import model.DustTemplate
 import scala.concurrent.{ExecutionContext, Future}

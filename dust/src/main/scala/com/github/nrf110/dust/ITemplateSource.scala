@@ -1,4 +1,4 @@
-package com.github.nrf110
+package com.github.nrf110.dust
 
 import util._
 import java.io.File

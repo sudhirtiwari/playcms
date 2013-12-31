@@ -1,4 +1,4 @@
-package com.github.nrf110
+package com.github.nrf110.dust
 
 import model.DustTemplate
 import parse._
@@ -13,6 +13,7 @@ object DustCompiler {
     }
   }
 
+  //TODO: implement this
   def compile(body: Body, name: String): Future[DustTemplate] = ???
 }
 

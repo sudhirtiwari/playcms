@@ -1,4 +1,4 @@
-package com.github.nrf110.parse
+package com.github.nrf110.dust.parse
 
 import scala.util.parsing.combinator._
 

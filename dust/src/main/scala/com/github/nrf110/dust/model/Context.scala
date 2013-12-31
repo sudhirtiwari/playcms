@@ -1,4 +1,4 @@
-package com.github.nrf110.model
+package com.github.nrf110.dust.model
 
 import play.api.libs.json._
 import scala.collection.immutable.Stack
