@@ -19,17 +19,6 @@ case class Page(
 
 object Page {
   type ID = String
-
   implicit val contentAreaFormats = Format(Reads.map[String], Writes.map[String])
-
-  val pageFormat = (
-    (__ \ '_id).formatNullable[String] ~
-    (__ \ 'siteId).format[String] ~
-    (__ \ 'parentId).formatNullable[String] ~
-    (__ \ 'templateId).format[String] ~
-    (__ \ 'relativePath).format[String] ~
-    (__ \ 'fullPath).formatNullable[String] ~
-    (__ \ 'contentAreas).format[Map[String, String]] ~
-    (__ \ 'isDeleted).format[Boolean]
-  )(Page.apply, unlift(Page.unapply))
+  val pageFormat = Json.format[Page]
 }

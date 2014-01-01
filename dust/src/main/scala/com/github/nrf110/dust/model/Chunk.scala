@@ -45,11 +45,6 @@ class Chunk(
       newData.copy(flushable = true)
     }
 
-    def withAck(fn: => ChunkData) = {
-      become(handle(fn))
-      sender ! Ack
-    }
-
     def map(data: ChunkData)(fn: Chunk => Unit) = {
       val cursor = Chunk(
         root = root,
@@ -67,6 +62,11 @@ class Chunk(
       data.copy(
         next = Option(branch),
         flushable = true)
+    }
+
+    def withAck(fn: => ChunkData) = {
+      become(handle(fn))
+      sender ! Ack
     }
   })
 
