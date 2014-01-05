@@ -1,5 +1,4 @@
 requirejs.config({
-    baseUrl: 'cms/assets/javascripts',
     paths: {
         text: '../components/requirejs-text/text',
         bootstrap: '../components/bootstrap/dist/js/bootstrap',
@@ -10,9 +9,7 @@ requirejs.config({
         durandal: '../components/durandal/js',
         plugins: '../components/durandal/js/plugins',
         transitions: '../components/durandal/js/transitions',
-        knockback: '../components/knockback/knockback',
-        backbone: '../components/backbone/backbone',
-        "backbone-relational": '../components/backbone-relational/backbone-relational'
+        q: '../components/q'
     },
     shim: {
         underscore: {
@@ -30,13 +27,6 @@ requirejs.config({
         "knockout.validation": {
             deps: ['knockout'],
             exports: 'knockout.validation'
-        },
-        backbone: {
-            deps: ['jquery'],
-            exports: 'Backbone'
-        },
-        "backbone-relational": {
-            deps: ['Backbone']
         }
     }
 });

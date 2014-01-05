@@ -19,6 +19,7 @@ trait IPageService {
   def isUnique(id: Option[Page.ID], siteId: Site.ID, parentId: Option[Page.ID], relativePath: String): Future[Boolean]
 }
 
+//TODO: implement move
 class PageService(repository: IPageRepository, eventBus: IEventBus)
                  (implicit ec: ExecutionContext, pageWrites: Writes[Page]) extends IPageService {
 

@@ -1,3 +1,4 @@
+GET         /cms/javascriptRoutes                       controllers.playcms.admin.Application.javascriptRoutes
 GET         /cms/assets/*file                           controllers.playcms.admin.Assets.at(path="/public", file)
 GET         /cms                                        controllers.playcms.admin.DashboardController.index
 

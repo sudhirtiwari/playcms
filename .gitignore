@@ -18,8 +18,8 @@ project/boot/
 project/project
 dist
 
-client/node_modules
-client/components
+admin/client/node_modules
+admin/client/components
 client/test_reports
 public
 

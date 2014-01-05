@@ -1,5 +1,5 @@
 @(body: Html = Html("../../../public"))
-@import controllers.playcms.admin.routes.{Assets => CmsAssets}
+@import controllers.playcms.admin.routes.{Assets => CmsAssets, Application}
 
 <!DOCTYPE html>
 <html lang="en" ng-app>
@@ -20,11 +20,7 @@
     <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
     <link rel="shortcut icon" href="../assets/ico/favicon.png">
     <script src="//localhost:35729/livereload.js"></script>
-    <script type="text/javascript">
-        document.rootPath = "@_root_.playcms.admin.Routes.prefix";
-        if (document.rootPath.charAt(document.rootPath.length) === '/') {
-            document.rootPath = document.rootPath.slice(0, -1);
-        }
+    <script type="text/javascript" src="@Application.javascriptRoutes">
     </script>
 </head>
     <body>

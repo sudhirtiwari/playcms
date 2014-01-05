@@ -19,6 +19,7 @@ trait ISiteService {
   def isUnique(id: Option[Site.ID], domain: String): Future[Boolean]
 }
 
+//TODO: implement move
 class SiteService(repository: ISiteRepository, eventBus: IEventBus, pageService: IPageService)
                  (implicit val ec: ExecutionContext, siteWrites: Writes[Site])
 
