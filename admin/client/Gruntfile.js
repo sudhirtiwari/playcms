@@ -30,12 +30,21 @@ module.exports = function(grunt) {
                         dest: '../public/javascripts'
                     }
                 ]
+            },
+            fonts: {
+                files: [
+                    {
+                        expand: true,
+                        src: ['fonts/**'],
+                        dest: '../public/'
+                    }
+                ]
             }
         },
         watch: {
             src: {
                 files: ['app/*.js', 'app/viewmodels/**.js', 'app/util/**.js'],
-                tasks: ['requirejs:dev']
+                tasks: ['requirejs:dev', 'karma:dev']
             },
             views: {
                 files: ['app/views/**.html'],
@@ -50,15 +59,14 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: ['../public/javascripts/**'],
-                //tasks: ['karma:dev'],
                 options: {
                     livereload: true
                 }
-            }//,
-//            test: {
-//                files: ['test/**'],
-//                tasks: ['karma:dev']
-//            }
+            },
+            test: {
+                files: ['test/**'],
+                tasks: ['karma:dev']
+            }
         },
         recess: {
             dist: {
@@ -103,7 +111,8 @@ module.exports = function(grunt) {
     grunt.registerTask('dev', [
         'recess:dist',
         'requirejs:dev',
-        'copy:views'
+        'copy:views',
+        'copy:fonts'
     ]);
     grunt.registerTask('run', [
         'dev',

@@ -3,4 +3,6 @@ function(Page, pageService) {
     var fn = function(model) {
         return new Page(model, pageService, fn);
     };
+
+    return fn;
 });

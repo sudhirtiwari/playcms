@@ -7,10 +7,10 @@ import playcms.admin.services._
 import playcms.events.StompEventBus
 
 package object admin {
-  implicit val pageFormat = models.Page.pageFormat
-  implicit val siteFormat = models.Site.siteFormat
-  implicit val templateFormat = models.Template.templateFormat
-  implicit val routeEntryFormat = models.RouteEntry.routeEntryFormat
+  implicit val pageFormat = playcms.models.Page.pageFormat
+  implicit val siteFormat = playcms.models.Site.siteFormat
+  implicit val templateFormat = playcms.models.Template.templateFormat
+  implicit val routeEntryFormat = playcms.models.RouteEntry.routeEntryFormat
   implicit val executionContext = play.api.libs.concurrent.Execution.defaultContext
   implicit val actorRefFactory = play.api.libs.concurrent.Akka.system
 

@@ -4,7 +4,7 @@ function(ko) {
         init: function(model) {
 
         },
-        observableAttributes: []
+        attributes: []
     });
 
     return Template;
